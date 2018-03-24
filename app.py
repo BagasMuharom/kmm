@@ -3,41 +3,43 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import random
 import io
-import clustering
+import kmedian
+import kmedoids
 import numpy as np
+import dataset
 
 app = Flask(__name__)
 
 @app.route('/')
 def main():
-    return render_template('index.html', datasets = clustering.sampledata, datasetskasus = clustering.dataset)
+    return render_template('index.html', datasets = dataset.sampledata, datasetskasus = dataset.dataset)
 
-@app.route('/plot')
+@app.route('/plot/kmedian')
 def plot():
     fig = Figure()
     axis = fig.add_subplot(1, 1, 1)
 
-    xs = clustering.sampledata[:,0]
-    ys = clustering.sampledata[:,1]
+    xs = dataset.sampledata[:,0]
+    ys = dataset.sampledata[:,1]
 
-    color = ['red', 'green', 'blue', 'orange']
+    color = ['red', 'green', 'blue', 'orange', 'cyan', 'violet']
 
     for i in range(len(xs)):
         if request.args.get('distance') == 'euclidean':
-            centroid_akhir = np.array(session['centroid_akhir_euclidean'])
+            # centroid_akhir = np.array(session['centroid_akhir_euclidean'])
             axis.scatter(xs[i], ys[i], color = color[session['cluster_euclidean'][i]])
-            axis.scatter(centroid_akhir[:,0],centroid_akhir[:,1], color = '#ff00ff')            
+            # axis.scatter(centroid_akhir[:,0],centroid_akhir[:,1], color = '#ff00ff')            
         elif request.args.get('distance') == 'manhattan':
-            centroid_akhir = np.array(session['centroid_akhir_manhattan'])            
+            # centroid_akhir = np.array(session['centroid_akhir_manhattan'])            
             axis.scatter(xs[i], ys[i], color = color[session['cluster_manhattan'][i]])
-            axis.scatter(centroid_akhir[:,0],centroid_akhir[:,1], color = '#ff00ff')                        
+            # axis.scatter(centroid_akhir[:,0],centroid_akhir[:,1], color = '#ff00ff')                        
         elif request.args.get('distance') == 'minkowsky':
-            centroid_akhir = np.array(session['centroid_akhir_minkowsky'])            
+            # centroid_akhir = np.array(session['centroid_akhir_minkowsky'])            
             axis.scatter(xs[i], ys[i], color = color[session['cluster_minkowsky'][i]])
-            axis.scatter(centroid_akhir[:,0],centroid_akhir[:,1], color = '#ff00ff')                        
+            # axis.scatter(centroid_akhir[:,0],centroid_akhir[:,1], color = '#ff00ff')                        
             
-    centroid_awal = np.array(session['centroid_awal'])
-    axis.scatter(centroid_awal[:,0],centroid_awal[:,1], color = 'black')
+    # centroid_awal = np.array(session['centroid_awal'])
+    # axis.scatter(centroid_awal[:,0],centroid_awal[:,1], color = 'black')
 
     axis.grid()
     canvas = FigureCanvas(fig)
@@ -47,19 +49,19 @@ def plot():
     response.mimetype = 'image/png'
     return response
 
-@app.route('/cluster_umum')
+@app.route('/cluster/sample/kmedian')
 def cluster_umum():
-    kcluster = 4
+    kcluster = 6
     cluster_euclidean = []
-    centroid = clustering.centroidAwal(clustering.sampledata, kcluster)
+    centroid = kmedian.centroidAwal(dataset.sampledata, kcluster)
     centroid_akhir_euclidean = []
     temp_centroid_akhir = centroid
 
     # k-median dengan euclidean
     while np.array_equal(temp_centroid_akhir, centroid_akhir_euclidean) == False:
         centroid_akhir_euclidean = temp_centroid_akhir
-        cluster_euclidean = clustering.clustering(centroid_akhir_euclidean, clustering.sampledata)
-        temp_centroid_akhir = clustering.cari_centroid_baru(clustering.sampledata, cluster_euclidean, kcluster)
+        cluster_euclidean = kmedian.clustering(centroid_akhir_euclidean, dataset.sampledata)
+        temp_centroid_akhir = kmedian.cari_centroid_baru(dataset.sampledata, cluster_euclidean, kcluster)
     
     # k-median dengan manhattan
     temp_centroid_akhir = centroid
@@ -67,8 +69,8 @@ def cluster_umum():
     cluster_manhattan = []
     while np.array_equal(temp_centroid_akhir, centroid_akhir_manhattan) == False:
         centroid_akhir_manhattan = temp_centroid_akhir
-        cluster_manhattan = clustering.clustering(centroid_akhir_manhattan, clustering.sampledata, 'manhattan')
-        temp_centroid_akhir = clustering.cari_centroid_baru(clustering.sampledata, cluster_manhattan, kcluster)
+        cluster_manhattan = kmedian.clustering(centroid_akhir_manhattan, dataset.sampledata, 'manhattan')
+        temp_centroid_akhir = kmedian.cari_centroid_baru(dataset.sampledata, cluster_manhattan, kcluster)
     
     # k-median dengan minkowsky
     temp_centroid_akhir = centroid
@@ -76,8 +78,8 @@ def cluster_umum():
     cluster_minkowsky = []
     while np.array_equal(temp_centroid_akhir, centroid_akhir_minkowsky) == False:
         centroid_akhir_minkowsky = temp_centroid_akhir
-        cluster_minkowsky = clustering.clustering(centroid_akhir_minkowsky, clustering.sampledata, 'minkowsky')
-        temp_centroid_akhir = clustering.cari_centroid_baru(clustering.sampledata, cluster_minkowsky, kcluster)
+        cluster_minkowsky = kmedian.clustering(centroid_akhir_minkowsky, dataset.sampledata, 'minkowsky')
+        temp_centroid_akhir = kmedian.cari_centroid_baru(dataset.sampledata, cluster_minkowsky, kcluster)
     
     session['cluster_euclidean'] = cluster_euclidean
     session['cluster_manhattan'] = cluster_manhattan
@@ -92,19 +94,64 @@ def cluster_umum():
         manhattan = cluster_manhattan, 
         minkowsky = cluster_minkowsky)
 
+@app.route('/cluster/sample/kmedoids')
+def cluster_sample_kmedoids():
+    jumlah_cluster = 6
+    threshold = 6
+    centroid_awal = kmedoids.defineCentroid(dataset.sampledata, jumlah_cluster)
+    hasil_euclidean = kmedoids.kmedoids(dataset.sampledata, jumlah_cluster, 'euclidean', threshold, centroid_awal)
+    hasil_manhattan = kmedoids.kmedoids(dataset.sampledata, jumlah_cluster, 'manhattan', 20, centroid_awal)
+    hasil_minkowsky = kmedoids.kmedoids(dataset.sampledata, jumlah_cluster, 'minkowsky', 20, centroid_awal)
+
+    session['sample_kmedoids_euclidean'] = hasil_euclidean
+    session['sample_kmedoids_manhattan'] = hasil_manhattan
+    session['sample_kmedoids_minkowsky'] = hasil_minkowsky
+
+    return jsonify(
+        euclidean = hasil_euclidean,
+        manhattan = hasil_manhattan,
+        minkowsky = hasil_minkowsky
+    )
+            
+
+@app.route('/plot/sample/kmedoids')
+def plot_sample_kmedoids():
+    fig = Figure()
+    axis = fig.add_subplot(1, 1, 1)
+
+    xs = dataset.sampledata[:,0]
+    ys = dataset.sampledata[:,1]
+
+    color = ['red', 'green', 'blue', 'orange', 'cyan', 'violet']
+
+    for i in range(len(xs)):
+        if request.args.get('distance') == 'euclidean':
+            axis.scatter(xs[i], ys[i], color = color[session['sample_kmedoids_euclidean']['cluster_baru'][i]])
+        elif request.args.get('distance') == 'manhattan':          
+            axis.scatter(xs[i], ys[i], color = color[session['sample_kmedoids_manhattan']['cluster_baru'][i]]) 
+        elif request.args.get('distance') == 'minkowsky':         
+            axis.scatter(xs[i], ys[i], color = color[session['sample_kmedoids_minkowsky']['cluster_baru'][i]])                     
+    axis.grid()
+    canvas = FigureCanvas(fig)
+    output = io.BytesIO()
+    canvas.print_png(output)
+    response = make_response(output.getvalue())
+    response.mimetype = 'image/png'
+    return response
+
 @app.route('/cluster_kasus')
 def kasus():
     kcluster = 4
     cluster_euclidean = []
-    centroid = clustering.centroidAwal(clustering.dataset, kcluster)
+    centroid = kmedian.centroidAwal(dataset.dataset, kcluster)
     centroid_akhir_euclidean = []
     temp_centroid_akhir = centroid
 
     # k-median dengan euclidean
     while np.array_equal(temp_centroid_akhir, centroid_akhir_euclidean) == False:
         centroid_akhir_euclidean = temp_centroid_akhir
-        cluster_euclidean = clustering.clustering(centroid_akhir_euclidean, clustering.dataset)
-        temp_centroid_akhir = clustering.cari_centroid_baru(clustering.dataset, cluster_euclidean, kcluster)
+        cluster_euclidean = kmedian.clustering(centroid_akhir_euclidean, dataset.dataset)
+        temp_centroid_akhir = kmedian.cari_centroid_baru(dataset.dataset, cluster_euclidean, kcluster)
     
     # k-median dengan manhattan
     temp_centroid_akhir = centroid
@@ -112,8 +159,8 @@ def kasus():
     cluster_manhattan = []
     while np.array_equal(temp_centroid_akhir, centroid_akhir_manhattan) == False:
         centroid_akhir_manhattan = temp_centroid_akhir
-        cluster_manhattan = clustering.clustering(centroid_akhir_manhattan, clustering.dataset, 'manhattan')
-        temp_centroid_akhir = clustering.cari_centroid_baru(clustering.dataset, cluster_manhattan, kcluster)
+        cluster_manhattan = kmedian.clustering(centroid_akhir_manhattan, dataset.dataset, 'manhattan')
+        temp_centroid_akhir = kmedian.cari_centroid_baru(dataset.dataset, cluster_manhattan, kcluster)
     
     # k-median dengan minkowsky
     temp_centroid_akhir = centroid
@@ -121,8 +168,8 @@ def kasus():
     cluster_minkowsky = []
     while np.array_equal(temp_centroid_akhir, centroid_akhir_minkowsky) == False:
         centroid_akhir_minkowsky = temp_centroid_akhir
-        cluster_minkowsky = clustering.clustering(centroid_akhir_minkowsky, clustering.dataset, 'minkowsky')
-        temp_centroid_akhir = clustering.cari_centroid_baru(clustering.dataset, cluster_minkowsky, kcluster)
+        cluster_minkowsky = kmedian.clustering(centroid_akhir_minkowsky, dataset.dataset, 'minkowsky')
+        temp_centroid_akhir = kmedian.cari_centroid_baru(dataset.dataset, cluster_minkowsky, kcluster)
     
     session['cluster_euclidean'] = cluster_euclidean
     session['cluster_manhattan'] = cluster_manhattan

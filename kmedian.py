@@ -1,6 +1,6 @@
 import numpy as np
 import math
-import distance
+import distance as dt
 
 def centroidAwal(data, jumlah_cluster):
     temp = []
@@ -23,11 +23,11 @@ def clustering(centroid, data, distance = 'euclidean'):
         # menghitung distance dari setiap centroid
         for k in centroid:
             if distance == 'euclidean':
-                hasil_per_centroid.append(distance.euclidean(i, k))
+                hasil_per_centroid.append(dt.euclidean(i, k))
             elif distance == 'manhattan':
-                hasil_per_centroid.append(distance.manhattan(i, k))
+                hasil_per_centroid.append(dt.manhattan(i, k))
             elif distance == 'minkowsky':
-                hasil_per_centroid.append(distance.minkowsky(i, k))               
+                hasil_per_centroid.append(dt.minkowsky(i, k))               
         
         cluster_baru.append(hasil_per_centroid.index(min(hasil_per_centroid)))
 
@@ -45,10 +45,10 @@ def cari_centroid_baru(data, cluster, jumlah_cluster):
     for i in range(len(data)):
         dictionary[cluster[i]].append(data[i])
         
-#     for i in range(len(dictionary)):
-#         centroids.append(np.array(dictionary[i]).mean(0))
-
     for i in range(len(dictionary)):
-        centroids.append(np.median(dictionary[i], axis=0))
+        centroids.append(np.array(dictionary[i]).mean(0))
+
+    # for i in range(len(dictionary)):
+    #     centroids.append(np.median(dictionary[i], axis=0))
       
     return np.array(centroids)

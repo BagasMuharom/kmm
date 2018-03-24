@@ -8,6 +8,11 @@
     <title>Clustering</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
         crossorigin="anonymous">
+    <style>
+        img {
+            max-width: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,102 +36,118 @@
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="konsep" role="tabpanel" aria-labelledby="konsep-tab">
                 <div class="row">
-                    <div class="col">
+                    <div class="col-md-12">
                         <h4>Dataset</h4>
-                            <table class="table" id="table_umum" style="vertical-align: center">
-                                    <thead>
-                                        <tr>
-                                            <th rowspan="2">x</th>
-                                            <th rowspan="2">y</th>
-                                            <th colspan="3">Cluster</th>
-                                        </tr>
-                                        <tr>
-                                            
-                                            <th>Euclidean</th>
-                                            <th>Manhattan</th>
-                                            <th>Minkowsky</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for dataset in datasets %}
-                                        <tr>
-                                            <td>{{ dataset[0] }}</td>
-                                            <td>{{ dataset[1] }}</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                        <table class="table" id="table_umum" style="vertical-align: center">
+                            <thead>
+                                <tr>
+                                    <th align="center" valign="middle" rowspan="3">x</th>
+                                    <th align="center" valign="middle" rowspan="3">y</th>
+                                    <th align="center" valign="middle" colspan="6">Cluster</th>
+                                </tr>
+                                <tr>
+                                    <th align="center" valign="middle" colspan="3">K-Medians</th>
+                                    <th align="center" valign="middle" colspan="3">K-Medoids</th>
+                                </tr>
+                                <tr>
+                                    <th align="center" valign="middle">Euclidean</th>
+                                    <th align="center" valign="middle">Manhattan</th>
+                                    <th align="center" valign="middle">Minkowsky</th>
+                                    <th align="center" valign="middle">Euclidean</th>
+                                    <th align="center" valign="middle">Manhattan</th>
+                                    <th align="center" valign="middle">Minkowsky</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dataset in datasets %}
+                                <tr>
+                                    <td>{{ dataset[0] }}</td>
+                                    <td>{{ dataset[1] }}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="col">
-                        <button id="mulai_clustering" class="btn btn-primary">Mulai Clustering</button>
-                        <div id="hasil_umum_plot" style="display: none">
-                            <h4>Hasil plot</h4>
-                            <h5>Euclidean Distance</h5>
-                            <img id="euclidean"/>
-                            <h5>Manhattan Distance</h5>
-                            <img id="manhattan"/>
-                            <h5>Minskowsky Distance</h5>
-                            <img id="minkowsky"/>
-                        </div>
+                    
+                </div>
+                <button id="mulai_clustering" class="btn btn-primary">Mulai Clustering</button>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Hasil plot Kmedian</h4>
+                        <h5>Euclidean Distance</h5>
+                        <img id="kmedian_euclidean" />
+                        <h5>Manhattan Distance</h5>
+                        <img id="kmedian_manhattan" />
+                        <h5>Minskowsky Distance</h5>
+                        <img id="kmedian_minkowsky" />
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Hasil plot Kmedoids</h4>
+                        <h5>Euclidean Distance</h5>
+                        <img id="kmedoids_euclidean" />
+                        <h5>Manhattan Distance</h5>
+                        <img id="kmedoids_manhattan" />
+                        <h5>Minskowsky Distance</h5>
+                        <img id="kmedoids_minkowsky" />
                     </div>
                 </div>
-                    
+
             </div>
             <div class="tab-pane fade" id="kasus" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="row">
-                    <div class="col">
+                    <div class="col-md-12">
                         <h4>Dataset</h4>
-                            <table class="table" id="table_kasus" style="vertical-align: center">
-                                    <thead>
-                                        <tr>
-                                            <th rowspan="2">x</th>
-                                            <th rowspan="2">y</th>
-                                            <th rowspan="2">y</th>
-                                            <th rowspan="2">y</th>
-                                            <th rowspan="2">y</th>
-                                            <th rowspan="2">y</th>
-                                            <th rowspan="2">y</th>
-                                            <th colspan="3">Cluster</th>
-                                        </tr>
-                                        <tr>
-                                            
-                                            <th>Euclidean</th>
-                                            <th>Manhattan</th>
-                                            <th>Minkowsky</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for dataset in datasetskasus %}
-                                        <tr>
-                                            <td>{{ dataset[0] }}</td>
-                                            <td>{{ dataset[1] }}</td>
-                                            <td>{{ dataset[2] }}</td>
-                                            <td>{{ dataset[3] }}</td>
-                                            <td>{{ dataset[4] }}</td>
-                                            <td>{{ dataset[5] }}</td>
-                                            <td>{{ dataset[6] }}</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                    </div>
-                    <div class="col">
-                        <button id="mulai_clustering_kasus" class="btn btn-primary">Mulai Clustering</button>
-                        <div id="hasil_umum_plot" style="display: none">
-                            <h4>Hasil plot</h4>
-                            <h5>Euclidean Distance</h5>
-                            <img id="euclidean"/>
-                            <h5>Manhattan Distance</h5>
-                            <img id="manhattan"/>
-                            <h5>Minskowsky Distance</h5>
-                            <img id="minkowsky"/>
-                        </div>
+                        <table class="table" id="table_kasus" style="vertical-align: center">
+                            <thead>
+                                <tr>
+                                    <th align="center" valign="middle" rowspan="3">x</th>
+                                    <th align="center" valign="middle" rowspan="3">y</th>
+                                    <th align="center" valign="middle" rowspan="3">y</th>
+                                    <th align="center" valign="middle" rowspan="3">y</th>
+                                    <th align="center" valign="middle" rowspan="3">y</th>
+                                    <th align="center" valign="middle" rowspan="3">y</th>
+                                    <th align="center" valign="middle" rowspan="3">y</th>
+                                    <th align="center" valign="middle" colspan="6">Cluster</th>
+                                </tr>
+                                <tr>
+                                    <th align="center" valign="middle" colspan="3">K-Medians</th>
+                                    <th align="center" valign="middle" colspan="3">K-Medoids</th>
+                                </tr>
+                                <tr>
+                                    <th align="center" valign="middle">Euclidean</th>
+                                    <th align="center" valign="middle">Manhattan</th>
+                                    <th align="center" valign="middle">Minkowsky</th>
+                                    <th align="center" valign="middle">Euclidean</th>
+                                    <th align="center" valign="middle">Manhattan</th>
+                                    <th align="center" valign="middle">Minkowsky</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dataset in datasetskasus %}
+                                <tr>
+                                    <td>{{ dataset[0] }}</td>
+                                    <td>{{ dataset[1] }}</td>
+                                    <td>{{ dataset[2] }}</td>
+                                    <td>{{ dataset[3] }}</td>
+                                    <td>{{ dataset[4] }}</td>
+                                    <td>{{ dataset[5] }}</td>
+                                    <td>{{ dataset[6] }}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -143,20 +164,51 @@
             e.preventDefault();
             $.ajax({
                 type: 'GET',
-                url: 'cluster_umum',
+                url: 'cluster/sample/kmedian',
                 success: function (response) {
-                    for(i in response.euclidean) {
-                        $('#table_umum').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(2)').text(response.euclidean[i])
-                        $('#table_umum').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(3)').text(response.manhattan[i])
-                        $('#table_umum').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(4)').text(response.minkowsky[i])
+                    for (i in response.euclidean) {
+                        $('#table_umum').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(2)').text(
+                            response.euclidean[i])
+                        $('#table_umum').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(3)').text(
+                            response.manhattan[i])
+                        $('#table_umum').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(4)').text(
+                            response.minkowsky[i])
                     }
 
                     $('#hasil_umum_plot').show()
-                    $('#euclidean').attr('src', '/plot?distance=euclidean&t=' + new Date().getTime())
-                    $('#manhattan').attr('src', '/plot?distance=manhattan&t=' + new Date().getTime())
-                    $('#minkowsky').attr('src', '/plot?distance=minkowsky&t=' + new Date().getTime())
+                    $('#kmedian_euclidean').attr('src', '/plot/kmedian?distance=euclidean&t=' + new Date()
+                        .getTime())
+                    $('#kmedian_manhattan').attr('src', '/plot/kmedian?distance=manhattan&t=' + new Date()
+                        .getTime())
+                    $('#kmedian_minkowsky').attr('src', '/plot/kmedian?distance=minkowsky&t=' + new Date()
+                        .getTime())
+
+
+                    $.ajax({
+                        type: 'GET',
+                        url: 'cluster/sample/kmedoids',
+                        success: function (response) {
+                            for (i in response.euclidean.cluster_baru) {
+                                $('#table_umum').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(5)').text(
+                                    response.euclidean.cluster_baru[i])
+                                $('#table_umum').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(6)').text(
+                                    response.manhattan.cluster_baru[i])
+                                $('#table_umum').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(7)').text(
+                                    response.minkowsky.cluster_baru[i])
+                            }
+
+                            $('#kmedoids_euclidean').attr('src',
+                                '/plot/sample/kmedoids?distance=euclidean&t=' + new Date().getTime())
+                            $('#kmedoids_manhattan').attr('src',
+                                '/plot/sample/kmedoids?distance=manhattan&t=' + new Date().getTime())
+                            $('#kmedoids_minkowsky').attr('src',
+                                '/plot/sample/kmedoids?distance=minkowsky&t=' + new Date().getTime())
+                        }
+                    })
                 }
             })
+
+            
         })
         $('#mulai_clustering_kasus').click(function (e) {
             e.preventDefault();
@@ -164,10 +216,13 @@
                 type: 'GET',
                 url: 'cluster_kasus',
                 success: function (response) {
-                    for(i in response.euclidean) {
-                        $('#table_kasus').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(7)').text(response.euclidean[i])
-                        $('#table_kasus').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(8)').text(response.manhattan[i])
-                        $('#table_kasus').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(9)').text(response.minkowsky[i])
+                    for (i in response.euclidean) {
+                        $('#table_kasus').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(7)').text(
+                            response.euclidean[i])
+                        $('#table_kasus').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(8)').text(
+                            response.manhattan[i])
+                        $('#table_kasus').find('tbody:eq(0)').find('tr').eq(i).find('td:eq(9)').text(
+                            response.minkowsky[i])
                     }
                 }
             })
