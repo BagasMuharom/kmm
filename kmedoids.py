@@ -46,11 +46,12 @@ def clustering(dataset, centroid, distance = 'euclidean'):
 
 def kmedoids(dataset, jumlah_cluster, distance, threshold, centroid_awal):
     centroid = centroid_awal
-    biaya_terkecil = 100
+    biaya_terkecil = 10000
     cluster = {}
     i = 0
 
-    while biaya_terkecil > threshold :
+    while biaya_terkecil > threshold and i < 500:
+
         hasil = clustering(dataset, centroid, distance)
         biaya = hasil['biaya']
         
@@ -64,5 +65,6 @@ def kmedoids(dataset, jumlah_cluster, distance, threshold, centroid_awal):
         i += 1
 
     cluster['centroid_akhir'] = np.array(centroid).tolist()
+    cluster['iterasi'] = i
 
     return cluster

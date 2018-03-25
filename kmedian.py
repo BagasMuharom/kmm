@@ -45,10 +45,29 @@ def cari_centroid_baru(data, cluster, jumlah_cluster):
     for i in range(len(data)):
         dictionary[cluster[i]].append(data[i])
         
-    for i in range(len(dictionary)):
-        centroids.append(np.array(dictionary[i]).mean(0))
-
     # for i in range(len(dictionary)):
-    #     centroids.append(np.median(dictionary[i], axis=0))
+    #     centroids.append(np.array(dictionary[i]).mean(0))
+
+    for i in range(len(dictionary)):
+        centroids.append(np.median(dictionary[i], axis=0))
       
     return np.array(centroids)
+
+def kmedian(dataset, jumlah_cluster, centroid, distance):
+    temp_centroid_akhir = centroid
+    centroid_akhir = []
+    cluster = []
+    i = 0 
+
+    # k-median dengan euclidean
+    while np.array_equal(temp_centroid_akhir, centroid_akhir) == False:
+        centroid_akhir = temp_centroid_akhir
+        cluster = clustering(centroid_akhir, dataset, distance)
+        temp_centroid_akhir = cari_centroid_baru(dataset, cluster, jumlah_cluster)
+        i += 1
+
+    return {
+        'cluster_baru' : cluster,
+        'centroid_akhir' : np.array(temp_centroid_akhir).tolist(),
+        'iterasi' : i
+    }
